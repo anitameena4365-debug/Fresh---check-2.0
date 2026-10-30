@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#e8eedf">
+<meta name="description" content="Track fridge food, expiry dates and food waste with FreshCheck.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="FreshCheck">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.svg">
+<title>FreshCheck — Fresh Food, Less Waste</title>
+<style>
+:root{--sage:#5f855b;--sage-dark:#315b3d;--sage-light:#e6eddc;--cream:#faf8ef;--white:#fffefa;--ink:#203c2b;--muted:#6d786d;--line:#e4e8da;--yellow:#f4c65e;--red:#e87569;--shadow:0 8px 28px #304b3210}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f4f3e8,#eaf0e3);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}
+.app{max-width:1120px;margin:auto;min-height:100vh;display:grid;grid-template-columns:230px 1fr;background:var(--cream);box-shadow:0 0 50px #263d2510}
+.sidebar{padding:26px 16px;background:#eef1e5;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:22px}
+.brand{display:flex;gap:10px;align-items:center;padding:0 8px}.logo{width:42px;height:42px;border-radius:14px;background:var(--sage);color:white;display:grid;place-items:center;font-size:24px}.brand h1{font-size:21px;line-height:1.1;margin:0;color:var(--sage-dark)}.brand small{color:var(--muted)}
+.nav{display:grid;gap:6px}.nav button{border:0;text-align:left;background:transparent;color:#4e6250;padding:12px 13px;border-radius:12px;display:flex;gap:11px;align-items:center}.nav button.active,.nav button:hover{background:#dce7d3;color:var(--sage-dark);font-weight:700}.nav .ico{width:22px;text-align:center;font-size:18px}
+.sidebar-note{margin-top:auto;background:#e0e9d5;border-radius:16px;padding:15px;color:#436345;font-size:13px}
+.main{min-width:0;padding:28px 32px 40px}.topbar{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:24px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--sage);font-weight:800}.topbar h2{margin:3px 0 0;font-size:28px}.profile{border:1px solid var(--line);background:white;padding:9px 13px;border-radius:999px;color:var(--ink)}
+.page{display:none}.page.active{display:block}.welcome{background:linear-gradient(110deg,#e5edd8,#f4f3e6);border:1px solid #e0e8d4;border-radius:22px;padding:24px;display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}.welcome h3{font-size:25px;margin:0 0 6px}.welcome p{margin:0;color:#536954;max-width:440px}.plant{font-size:60px;flex-shrink:0}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:18px 0}.stat{background:var(--white);border:1px solid var(--line);border-radius:17px;padding:16px;box-shadow:var(--shadow)}.stat .symbol{font-size:21px}.stat strong{display:block;font-size:27px;margin:8px 0 1px}.stat span{font-size:13px;color:var(--muted)}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 12px}.section-head h3{margin:0;font-size:18px}.btn{border:0;background:var(--sage);color:white;font-weight:700;border-radius:12px;padding:11px 16px}.btn:hover{background:var(--sage-dark)}.btn.secondary{background:#e7eddf;color:var(--sage-dark)}.btn.danger{background:#fae8e4;color:#9d4037}.btn.small{padding:7px 10px;font-size:13px}.panel{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.quick button{background:#f3f4e9;border:1px solid var(--line);border-radius:15px;padding:17px 10px;color:var(--ink);font-weight:650}.quick button span{display:block;font-size:24px;margin-bottom:6px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.toolbar input{flex:1;min-width:180px}.field,input,select{border:1px solid #dce2d3;background:white;border-radius:11px;padding:11px 12px;color:var(--ink);width:100%;outline-color:var(--sage)}.toolbar select{width:auto;min-width:145px}.food-list{display:grid;gap:10px}.food{display:flex;align-items:center;gap:13px;border:1px solid var(--line);border-radius:15px;padding:13px;background:#fff}.food-icon{width:48px;height:48px;display:grid;place-items:center;background:#f0f3e7;border-radius:13px;font-size:26px;flex-shrink:0}.food-info{flex:1;min-width:0}.food-info strong{display:block}.food-info small{color:var(--muted)}.badge{display:inline-block;font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px;white-space:nowrap}.fresh{background:#dcefd8;color:#2f6a38}.soon{background:#fff0c5;color:#815d09}.expired{background:#f9dfdc;color:#9c3830}.empty{text-align:center;padding:35px 15px;color:var(--muted)}.empty div{font-size:38px;margin-bottom:8px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-group{display:grid;gap:6px}.form-group label{font-size:13px;font-weight:750}.form-group.full{grid-column:1/-1}.form-actions{display:flex;gap:10px;margin-top:17px}.detail-hero{display:flex;align-items:center;gap:15px;padding:20px;background:#f2f4e9;border-radius:16px;margin-bottom:15px}.detail-hero .big{font-size:50px}.detail-hero h3{margin:0 0 5px;font-size:24px}.detail-row{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line)}.detail-row:last-child{border:0}.detail-row span{color:var(--muted)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:15px}.barrow{display:grid;grid-template-columns:72px 1fr 28px;gap:10px;align-items:center;margin:12px 0;font-size:13px}.bar{height:10px;border-radius:99px;background:#edf0e5;overflow:hidden}.bar i{display:block;height:100%;background:var(--sage);border-radius:99px}.recipe-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.recipe{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:white}.recipe .photo{height:100px;display:grid;place-items:center;font-size:48px;background:linear-gradient(120deg,#e4edd8,#f7f2df)}.recipe .body{padding:13px}.recipe h4{margin:0 0 5px}.recipe p{margin:0 0 10px;color:var(--muted);font-size:13px}
+.setting{display:flex;gap:12px;align-items:center;padding:15px 0;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting .symbol{font-size:22px}.setting .words{flex:1}.setting small{display:block;color:var(--muted)}.switch{width:42px;height:24px;border-radius:99px;background:var(--sage);border:0;position:relative}.switch:after{content:"";position:absolute;right:3px;top:3px;width:18px;height:18px;border-radius:50%;background:white}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#244a31;color:white;padding:12px 18px;border-radius:12px;box-shadow:var(--shadow);display:none;z-index:10}.toast.show{display:block}
+.bottomnav{display:none}
+@media(max-width:760px){.app{display:block}.sidebar{display:none}.main{padding:20px 15px 90px}.topbar h2{font-size:24px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.welcome{padding:18px}.welcome h3{font-size:22px}.plant{font-size:45px}.quick{grid-template-columns:repeat(3,1fr)}.quick button{font-size:12px;padding:12px 5px}.two-col,.recipe-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.form-group.full{grid-column:auto}.food{gap:9px;padding:10px}.food-icon{width:42px;height:42px}.food .badge{font-size:10px;padding:5px 7px}.bottomnav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:#fffef8;border-top:1px solid var(--line);padding:8px 3px calc(8px + env(safe-area-inset-bottom));z-index:5}.bottomnav button{border:0;background:transparent;color:#617060;font-size:10px;display:grid;gap:2px;justify-items:center;min-width:0;padding:2px 4px}.bottomnav button span{font-size:19px}.bottomnav button.active{color:var(--sage-dark);font-weight:800}.profile{font-size:12px;padding:8px}.stat{padding:13px}.stat strong{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">🌿</div><div><h1>FreshCheck</h1><small>Fresh food, less waste</small></div></div>
+  <nav class="nav" id="sideNav">
+    <button class="active" data-page="home"><span class="ico">⌂</span> Home</button>
+    <button data-page="inventory"><span class="ico">▤</span> Fridge Inventory</button>
+    <button data-page="add"><span class="ico">＋</span> Add Food</button>
+    <button data-page="waste"><span class="ico">♧</span> Food-Waste Tracker</button>
+    <button data-page="recipes"><span class="ico">♨</span> Recipe Suggestions</button>
+    <button data-page="settings"><span class="ico">⚙</span> Settings</button>
+    <button data-page="install"><span class="ico">📱</span> Add to Home Screen</button>
+  </nav>
+  <div class="sidebar-note">🌱 <strong>Small steps. Big impact.</strong><br>Every item used is a little less food wasted.</div>
+</aside>
+<main class="main">
+  <header class="topbar"><div><div class="eyebrow">Your kitchen companion</div><h2 id="pageTitle">Home / Dashboard</h2></div><button class="profile" data-go="settings">⚙ Settings</button></header>
+  <section class="page active" id="page-home">
+    <div class="welcome"><div><div class="eyebrow">Welcome to FreshCheck</div><h3>Let's keep your food fresh!</h3><p>Know what you have, use it in time, and waste less. 🌿</p></div><div class="plant">🪴</div></div>
+    <div class="grid">
+      <div class="stat"><div class="symbol">🧺</div><strong id="totalCount">0</strong><span>Total items</span></div>
+      <div class="stat"><div class="symbol">🌿</div><strong id="freshCount">0</strong><span>Fresh</span></div>
+      <div class="stat"><div class="symbol">🔔</div><strong id="soonCount">0</strong><span>Use soon</span></div>
+      <div class="stat"><div class="symbol">⏰</div><strong id="expiredCount">0</strong><span>Expired</span></div>
+    </div>
+    <div class="section-head"><h3>Quick actions</h3></div>
+    <div class="quick"><button data-go="add"><span>＋</span>Add food</button><button data-go="inventory"><span>🥬</span>View fridge</button><button data-go="waste"><span>📊</span>Track waste</button></div>
+    <div class="section-head"><h3>Needs your attention</h3><button class="btn secondary small" data-go="inventory">View all</button></div>
+    <div class="panel" id="attention"><div class="empty"><div>🥦</div>Your fridge is ready for its first item.<br>Add food to start tracking expiry dates.</div></div>
+  </section>
+  <section class="page" id="page-inventory">
+    <div class="toolbar"><input id="searchInput" placeholder="🔍 Search food items…"><select id="categoryFilter"><option value="">All categories</option><option>Vegetables</option><option>Fruits</option><option>Dairy</option><option>Grains</option><option>Packaged</option><option>Other</option></select><select id="statusFilter"><option value="">All statuses</option><option value="Fresh">Fresh</option><option value="Use Soon">Use Soon</option><option value="Expired">Expired</option></select><button class="btn" data-go="add">＋ Add food</button></div>
+    <div class="food-list" id="inventoryList"></div>
+  </section>
+  <section class="page" id="page-add">
+    <div class="panel"><p style="color:var(--muted);margin-top:0">Add an item so FreshCheck can help you remember to use it in time.</p>
+      <form id="foodForm"><input type="hidden" id="editId">
+      <div class="form-grid">
+        <div class="form-group"><label for="foodName">Food name *</label><input id="foodName" required maxlength="60" placeholder="e.g. Tomatoes"></div>
+        <div class="form-group"><label for="foodCategory">Category *</label><select id="foodCategory" required><option value="">Choose category</option><option>Vegetables</option><option>Fruits</option><option>Dairy</option><option>Grains</option><option>Packaged</option><option>Other</option></select></div>
+        <div class="form-group"><label for="foodQty">Quantity</label><input id="foodQty" maxlength="30" placeholder="e.g. 4 pieces, 1 litre"></div>
+        <div class="form-group"><label for="expiryDate">Expiry / use-by date *</label><input id="expiryDate" type="date" required></div>
+        <div class="form-group full"><label for="foodNotes">Notes (optional)</label><input id="foodNotes" maxlength="120" placeholder="e.g. Opened yesterday"></div>
+      </div><div class="form-actions"><button class="btn" type="submit" id="saveBtn">Save food item</button><button class="btn secondary" type="button" id="cancelEdit">Clear form</button></div>
+      </form>
+    </div>
+  </section>
+  <section class="page" id="page-details"><div class="panel" id="detailPanel"></div></section>
+  <section class="page" id="page-waste">
+    <div class="grid"><div class="stat"><div class="symbol">🧺</div><strong id="wTotal">0</strong><span>Items added</span></div><div class="stat"><div class="symbol">🍽️</div><strong id="wUsed">0</strong><span>Items used</span></div><div class="stat"><div class="symbol">♻️</div><strong id="wSaved">0</strong><span>Items saved from waste</span></div><div class="stat"><div class="symbol">🗑️</div><strong id="wWasted">0</strong><span>Items wasted</span></div></div>
+    <div class="two-col"><div class="panel"><h3 style="margin-top:0">Your food journey</h3><p style="color:var(--muted);font-size:13px">Mark an item as used or wasted from its details page to build your own stats.</p><div class="barrow"><span>Used</span><div class="bar"><i id="usedBar" style="width:0%"></i></div><b id="usedPct">0%</b></div><div class="barrow"><span>Wasted</span><div class="bar"><i id="wasteBar" style="width:0%;background:var(--red)"></i></div><b id="wastePct">0%</b></div></div><div class="panel"><h3 style="margin-top:0">How to make an impact</h3><p>✓ Check your fridge before shopping.</p><p>✓ Put soon-to-expire items where you can see them.</p><p>✓ Store food according to its label and handling guidance.</p><p style="color:var(--muted);font-size:12px">Stats are based on actions you record in FreshCheck.</p></div></div>
+    <div class="section-head"><h3>Recently recorded</h3></div><div class="food-list" id="historyList"></div>
+  </section>
+  <section class="page" id="page-recipes">
+    <div class="welcome"><div><div class="eyebrow">Cook with what you have</div><h3>Good food, less waste.</h3><p>Recipe ideas based on ingredients you are tracking. Check freshness and food-safety guidance before cooking.</p></div><div class="plant">🥕</div></div>
+    <div class="recipe-grid">
+      <article class="recipe"><div class="photo">🥘</div><div class="body"><h4>Quick veggie stir-fry</h4><p>Use vegetables that need attention, plus your preferred seasoning.</p><button class="btn secondary small" data-recipe="Quick veggie stir-fry">View idea</button></div></article>
+      <article class="recipe"><div class="photo">🍅</div><div class="body"><h4>Tomato soup</h4><p>A simple option when you have fresh tomatoes and pantry basics.</p><button class="btn secondary small" data-recipe="Tomato soup">View idea</button></div></article>
+      <article class="recipe"><div class="photo">🥗</div><div class="body"><h4>Everyday mixed salad</h4><p>Combine suitable fresh vegetables or fruits with a simple dressing.</p><button class="btn secondary small" data-recipe="Everyday mixed salad">View idea</button></div></article>
+      <article class="recipe"><div class="photo">🍲</div><div class="body"><h4>Comforting pantry bowl</h4><p>Pair grains with cooked vegetables, beans or lentils you have available.</p><button class="btn secondary small" data-recipe="Comforting pantry bowl">View idea</button></div></article>
+    </div><p style="font-size:12px;color:var(--muted)">Recipe cards are starter ideas; they do not automatically verify that an ingredient is safe or available.</p>
+  </section>
+  <section class="page" id="page-install">
+    <div class="panel" style="max-width:600px;margin:auto;text-align:center;padding:30px 22px">
+      <div style="font-size:68px;margin:8px 0 18px">🌿</div>
+      <div class="eyebrow">FreshCheck on your phone</div>
+      <h3 style="font-size:25px;margin:8px 0">Add FreshCheck to your Home Screen</h3>
+      <p style="color:var(--muted)">Open FreshCheck quickly whenever you need to check your fridge.</p>
+      <div style="background:#eef2e5;border-radius:16px;padding:17px;text-align:left;margin:20px 0">
+        <strong>On Android (Chrome)</strong>
+        <ol style="padding-left:22px;line-height:1.8"><li>Open the hosted FreshCheck website in Chrome.</li><li>Tap the three-dot menu (⋮).</li><li>Choose <strong>Add to Home screen</strong> or <strong>Install app</strong>, if shown.</li><li>Confirm the name and tap Add or Install.</li></ol>
+      </div>
+      <p style="font-size:12px;color:var(--muted)">Note: this downloadable preview needs to be hosted with a web app manifest and service worker for a full installable, offline-capable PWA experience.</p>
+      <button class="btn secondary" data-go="settings">Back to Settings</button>
+    </div>
+  </section>
+  <section class="page" id="page-settings">
+    <div class="panel"><div class="setting"><div class="symbol">🔔</div><div class="words"><strong>Expiry reminders</strong><small>Show in-app attention alerts for items nearing their date.</small></div><button class="switch" id="reminderToggle" aria-label="Toggle expiry reminders"></button></div>
+    <div class="setting"><div class="symbol">💾</div><div class="words"><strong>Data storage</strong><small>Items are saved in this browser on this device.</small></div></div>
+    <div class="setting"><div class="symbol">📱</div><div class="words"><strong>Home-screen installation</strong><small>Use your browser menu and choose “Add to Home screen” when available.</small></div><button class="btn secondary small" data-go="install">Open guide</button></div>
+    <div class="setting"><div class="symbol">📤</div><div class="words"><strong>Export your food list</strong><small>Download a copy of the items you have entered.</small></div><button class="btn secondary small" id="exportBtn">Export CSV</button></div>
+    <div class="setting"><div class="symbol">🧹</div><div class="words"><strong>Clear all app data</strong><small>This removes the food items and history saved in this browser.</small></div><button class="btn danger small" id="clearBtn">Clear data</button></div>
+    </div>
+    <div class="panel" style="margin-top:15px"><h3 style="margin-top:0">About FreshCheck</h3><p style="color:var(--muted)">FreshCheck helps households track food, remember dates, and make more mindful use of groceries.</p><p style="font-size:12px;color:var(--muted)">Reminder: date labels and storage instructions vary by food. Never rely on the app alone to determine whether food is safe.</p></div>
+  </section>
+</main>
+</div>
+<nav class="bottomnav" id="bottomNav"><button class="active" data-page="home"><span>⌂</span>Home</button><button data-page="inventory"><span>▤</span>Fridge</button><button data-page="add"><span>＋</span>Add</button><button data-page="recipes"><span>♨</span>Recipes</button><button data-page="waste"><span>♧</span>Stats</button><button data-page="settings"><span>⚙</span>Settings</button></nav>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $=id=>document.getElementById(id);
+const STORE='freshcheck_v2_items';
+const HIST='freshcheck_v2_history';
+let items=[], history=[], selectedId=null, reminders=true;
+const titles={home:'Home / Dashboard',inventory:'Fridge Inventory',add:'Add Food',details:'Food Details',waste:'Food-Waste Tracker',recipes:'Recipe Suggestions',settings:'Settings',install:'Add to Home Screen'};
+const icons={Vegetables:'🥬',Fruits:'🍎',Dairy:'🥛',Grains:'🌾',Packaged:'🥫',Other:'🍽️'};
+function load(){try{items=JSON.parse(localStorage.getItem(STORE)||'[]');history=JSON.parse(localStorage.getItem(HIST)||'[]')}catch(e){items=[];history=[]}renderAll()}
+function save(){localStorage.setItem(STORE,JSON.stringify(items));localStorage.setItem(HIST,JSON.stringify(history));renderAll()}
+function dateToday(){let d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())}
+function status(item){let due=new Date(item.expiry+'T00:00:00');let today=dateToday();let diff=Math.round((due-today)/86400000);if(diff<0)return 'Expired';if(diff<=3)return 'Use Soon';return 'Fresh'}
+function badge(s){return `<span class="badge ${s==='Fresh'?'fresh':s==='Use Soon'?'soon':'expired'}">${s}</span>`}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function niceDate(s){if(!s)return 'Not set';return new Date(s+'T00:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}
+function go(page){document.querySelectorAll('[data-go]').forEach(b=>{if(!b.dataset.bound){b.addEventListener('click',()=>go(b.dataset.go));b.dataset.bound='1'}});document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$('page-'+page).classList.add('active');document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));$('pageTitle').textContent=titles[page]||'FreshCheck';if(page==='add'&&!$('editId').value)resetForm();if(page==='inventory')renderInventory();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+function renderAll(){renderStats();renderInventory();renderAttention();renderWaste();renderHistory()}
+function renderStats(){let active=items.filter(i=>!i.recorded);$('totalCount').textContent=active.length;$('freshCount').textContent=active.filter(i=>status(i)==='Fresh').length;$('soonCount').textContent=active.filter(i=>status(i)==='Use Soon').length;$('expiredCount').textContent=active.filter(i=>status(i)==='Expired').length}
+function foodCard(i){let s=status(i);return `<article class="food"><div class="food-icon">${icons[i.category]||'🍽️'}</div><div class="food-info"><strong>${esc(i.name)}</strong><small>Expiry: ${niceDate(i.expiry)}${i.qty?' · Qty: '+esc(i.qty):''}</small></div>${badge(s)}<button class="btn secondary small" data-detail="${i.id}" aria-label="View ${esc(i.name)}">View</button></article>`}
+function renderInventory(){let q=($('searchInput')?.value||'').trim().toLowerCase(),cat=$('categoryFilter')?.value||'',st=$('statusFilter')?.value||'';let list=items.filter(i=>!i.recorded&&i.name.toLowerCase().includes(q)&&(!cat||i.category===cat)&&(!st||status(i)===st)).sort((a,b)=>a.expiry.localeCompare(b.expiry));$('inventoryList').innerHTML=list.length?list.map(foodCard).join(''):`<div class="panel empty"><div>🧺</div>${items.some(i=>!i.recorded)?'No items match your filters. Try another search or category.':'Your fridge list is empty. Add your first food item to get started.'}<br><button class="btn" style="margin-top:12px" data-go="add">＋ Add food</button></div>`;document.querySelectorAll('[data-detail]').forEach(b=>b.addEventListener('click',()=>showDetails(b.dataset.detail)));document.querySelectorAll('#inventoryList [data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)))}
+function renderAttention(){let list=items.filter(i=>!i.recorded&&status(i)!=='Fresh').sort((a,b)=>a.expiry.localeCompare(b.expiry)).slice(0,3);$('attention').innerHTML=list.length?`<div class="food-list">${list.map(foodCard).join('')}</div>`:`<div class="empty"><div>${items.length?'🌿':'🥦'}</div>${items.length?'Nothing currently needs attention based on the dates entered.':'Your fridge is ready for its first item.'}<br>${items.length?'Keep checking labels and storage guidance.':'Add food to start tracking expiry dates.'}</div>`;$('attention').querySelectorAll('[data-detail]').forEach(b=>b.addEventListener('click',()=>showDetails(b.dataset.detail)))}
+function showDetails(id){let i=items.find(x=>x.id===id);if(!i)return;selectedId=id;let s=status(i);$('detailPanel').innerHTML=`<div class="detail-hero"><div class="big">${icons[i.category]||'🍽️'}</div><div><h3>${esc(i.name)}</h3>${badge(s)}<div style="color:var(--muted);font-size:13px;margin-top:7px">${esc(i.category)}</div></div></div><div class="detail-row"><span>Expiry / use-by date</span><strong>${niceDate(i.expiry)}</strong></div><div class="detail-row"><span>Quantity</span><strong>${esc(i.qty||'Not specified')}</strong></div><div class="detail-row"><span>Notes</span><strong>${esc(i.notes||'—')}</strong></div><div class="form-actions" style="flex-wrap:wrap"><button class="btn" id="editItem">Edit item</button><button class="btn secondary" id="markUsed">Mark as used</button><button class="btn secondary" id="markWasted">Mark as wasted</button><button class="btn danger" id="deleteItem">Delete</button></div><p style="font-size:12px;color:var(--muted)">Status is calculated from the date you entered. It is not a guarantee that food is safe or unsafe to eat.</p>`;go('details');$('editItem').onclick=()=>editItem(id);$('markUsed').onclick=()=>recordItem(id,'Used');$('markWasted').onclick=()=>recordItem(id,'Wasted');$('deleteItem').onclick=()=>deleteItem(id)}
+$('foodForm').addEventListener('submit',e=>{e.preventDefault();let id=$('editId').value;let obj={id:id||String(Date.now())+'-'+Math.random().toString(16).slice(2,7),name:$('foodName').value.trim(),category:$('foodCategory').value,qty:$('foodQty').value.trim(),expiry:$('expiryDate').value,notes:$('foodNotes').value.trim(),createdAt:new Date().toISOString()};if(!obj.name||!obj.category||!obj.expiry)return;let dup=items.find(i=>!i.recorded&&i.name.toLowerCase()===obj.name.toLowerCase()&&i.id!==id);if(dup&&!confirm(`You already have “${dup.name}” in your list. Add another item anyway?`))return;if(id){let ix=items.findIndex(i=>i.id===id);if(ix>=0)items[ix]={...items[ix],...obj};toast('Food item updated')}else{items.push(obj);history.unshift({id:obj.id,name:obj.name,action:'Added',date:new Date().toISOString()});toast('Food item added')};save();resetForm();go('inventory')});
+function resetForm(){$('foodForm').reset();$('editId').value='';$('saveBtn').textContent='Save food item';$('pageTitle').textContent='Add Food'}
+function editItem(id){let i=items.find(x=>x.id===id);if(!i)return;$('editId').value=i.id;$('foodName').value=i.name;$('foodCategory').value=i.category;$('foodQty').value=i.qty||'';$('expiryDate').value=i.expiry;$('foodNotes').value=i.notes||'';$('saveBtn').textContent='Update food item';go('add')}
+function deleteItem(id){let i=items.find(x=>x.id===id);if(!i||!confirm(`Delete ${i.name} from your inventory?`))return;items=items.filter(x=>x.id!==id);history.unshift({id,name:i.name,action:'Deleted',date:new Date().toISOString()});save();toast('Item deleted');go('inventory')}
+function recordItem(id,action){let i=items.find(x=>x.id===id);if(!i)return;i.recorded=action;i.recordedAt=new Date().toISOString();history.unshift({id,name:i.name,action,date:i.recordedAt});save();toast(action==='Used'?'Marked as used':'Marked as wasted');go('waste')}
+function renderWaste(){let added=history.filter(h=>h.action==='Added').length,used=history.filter(h=>h.action==='Used').length,wasted=history.filter(h=>h.action==='Wasted').length,base=used+wasted; $('wTotal').textContent=added;$('wUsed').textContent=used;$('wSaved').textContent=used;$('wWasted').textContent=wasted;$('usedPct').textContent=(base?Math.round(used/base*100):0)+'%';$('wastePct').textContent=(base?Math.round(wasted/base*100):0)+'%';$('usedBar').style.width=(base?used/base*100:0)+'%';$('wasteBar').style.width=(base?wasted/base*100:0)+'%'}
+function renderHistory(){$('historyList').innerHTML=history.length?history.slice(0,10).map(h=>`<div class="food"><div class="food-icon">${h.action==='Used'?'🍽️':h.action==='Wasted'?'🗑️':h.action==='Added'?'＋':'↻'}</div><div class="food-info"><strong>${esc(h.name)}</strong><small>${esc(h.action)} · ${new Date(h.date).toLocaleDateString()}</small></div></div>`).join(''):`<div class="panel empty"><div>📊</div>Your activity will appear here when you add, use or record food.</div>`}
+$('searchInput').addEventListener('input',renderInventory);$('categoryFilter').addEventListener('change',renderInventory);$('statusFilter').addEventListener('change',renderInventory);$('cancelEdit').addEventListener('click',resetForm);
+$('reminderToggle').addEventListener('click',()=>{reminders=!reminders;$('reminderToggle').style.background=reminders?'var(--sage)':'#b8c0b4';$('reminderToggle').style.opacity=reminders?'1':'.7';toast(reminders?'In-app attention alerts enabled':'In-app attention alerts paused')});
+$('installHelp').addEventListener('click',()=>alert('On Android: open this app in Chrome, tap ⋮, then choose “Add to Home screen” or “Install app” if available. If Install app is not shown, make sure you are opening the official hosted FreshCheck website in Chrome.'));
+$('clearBtn').addEventListener('click',()=>{if(confirm('Clear all FreshCheck food items and history saved in this browser? This cannot be undone.')){items=[];history=[];save();toast('App data cleared')}})
+$('exportBtn').addEventListener('click',()=>{let rows=[['Name','Category','Quantity','Expiry Date','Status','Notes','Recorded'],...items.map(i=>[i.name,i.category,i.qty||'',i.expiry,status(i),i.notes||'',i.recorded||''])];let csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');let blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='freshcheck-food-list.csv';a.click();URL.revokeObjectURL(url)});
+document.querySelectorAll('[data-recipe]').forEach(b=>b.addEventListener('click',()=>{let name=b.dataset.recipe;alert(name+'\\n\\nCheck your current ingredients and use only food that has been stored and handled safely. This is a starter recipe idea, not a live ingredient-matching recipe.')}));
+function toast(msg){let t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+load();
+</script>
+
+<script>
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
